@@ -3,98 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MATZUMI V12 - MULTISERVICIOS ANATO SMG</title>
+    <title>MATZUMI V15 - MULTISERVICIOS ANATO SMG</title>
     <style>
-        :root { --neon-blue: #00f2ff; --matsumi-green: #2ecc71; --bg-dark: #080808; }
-        body { background: var(--bg-dark); color: white; font-family: 'Courier New', monospace; margin: 0; padding: 10px; display: flex; flex-direction: column; height: 100vh; }
-        .header { text-align: center; border-bottom: 2px solid var(--matsumi-green); padding-bottom: 5px; margin-bottom: 10px; }
-        .sensors { display: flex; justify-content: space-between; padding: 5px 10px; background: #111; border-radius: 5px; font-size: 14px; color: var(--neon-blue); }
+        :root { --neon-blue: #00f2ff; --matsumi-green: #2ecc71; --bg-dark: #050505; }
+        body { background: var(--bg-dark); color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         
+        .header { text-align: center; border-bottom: 2px solid var(--neon-blue); padding-bottom: 5px; }
+        .neon-title { color: var(--neon-blue); font-size: 18px; font-weight: bold; text-transform: uppercase; }
+
         #monitor { 
-            background: #000; border: 1px solid var(--matsumi-green); height: 120px; 
-            border-radius: 5px; padding: 10px; overflow-y: auto; color: var(--matsumi-green); 
-            font-size: 13px; box-shadow: inset 0 0 10px #003300; margin: 10px 0;
+            background: #000; border: 2px solid var(--matsumi-green); height: 180px; 
+            border-radius: 8px; padding: 15px; overflow-y: auto; color: var(--matsumi-green); 
+            font-family: 'Consolas', monospace; font-size: 14px; box-shadow: inset 0 0 15px #003300; margin: 10px 0;
+            line-height: 1.4;
         }
 
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; flex-grow: 1; }
+        .input-area { margin-bottom: 10px; }
+        #user-input { width: 94%; background: #111; border: 1px solid #444; color: white; padding: 10px; border-radius: 5px; font-size: 14px; }
+
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; flex-grow: 1; margin-bottom: 5px; }
         .btn-smg { 
-            background: #151515; border: 1px solid #444; color: #ccc; border-radius: 8px; 
-            padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            font-size: 11px; font-weight: bold; transition: 0.2s;
+            background: #1a1a1a; border: 2px solid #333; color: white; border-radius: 10px; 
+            font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.2s;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
-        .btn-smg:active { background: var(--matsumi-green); color: black; box-shadow: 0 0 15px var(--matsumi-green); }
-        .btn-smg small { font-size: 9px; opacity: 0.7; margin-top: 4px; }
+        .btn-smg:active { background: var(--matsumi-green); color: black; }
 
-        .footer { display: flex; justify-content: space-around; align-items: center; padding: 15px 0; background: #111; border-radius: 20px 20px 0 0; }
-        .action-btn { background: #222; border: 1px solid #444; color: white; width: 50px; height: 50px; border-radius: 50%; font-size: 22px; cursor: pointer; }
-        .mic-main { width: 70px; height: 70px; background: var(--matsumi-green); color: black; border: none; border-radius: 50%; font-size: 30px; box-shadow: 0 0 20px var(--matsumi-green); }
+        .sub-btn { background: #222; border: 1px solid var(--matsumi-green); color: white; padding: 8px; margin: 4px; border-radius: 6px; font-size: 12px; cursor: pointer; display: inline-block; }
+        .sub-btn:hover { background: var(--matsumi-green); color: black; }
+
+        .footer { display: flex; justify-content: space-around; align-items: center; padding: 10px; background: #111; border-radius: 20px 20px 0 0; }
+        .mic-btn { width: 65px; height: 65px; background: var(--matsumi-green); color: black; border: none; border-radius: 50%; font-size: 28px; box-shadow: 0 0 15px var(--matsumi-green); }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <div style="font-size: 16px; color: var(--neon-blue);">MULTISERVICIO ANATO SMG</div>
-    <div style="font-size: 12px; color: var(--matsumi-green);">Asistente MATZUMI V12</div>
+    <div class="neon-title">Multiservicios Anato SMG</div>
+    <div style="color: var(--matsumi-green); font-size: 12px; font-weight: bold;">MATZUMI V15 - OFFLINE TECH</div>
 </div>
 
-<div class="sensors">
-    <span>📍 LOS GUAYOS</span>
-    <span id="temp">24°C</span>
+<div id="monitor">> SISTEMA MATZUMI CARGADO.<br>> TODOS LOS DATOS TÉCNICOS ESTÁN OFFLINE.<br>> ESCRIBA O SELECCIONE UNA OPCIÓN.</div>
+
+<div class="input-area">
+    <input type="text" id="user-input" placeholder="Escriba marca o falla (ej: Green Plus)..." onkeypress="checkEnter(event)">
 </div>
 
-<div id="monitor">> SISTEMA MATZUMI LISTA...<br>> ESPERANDO ÓRDENES, AMO.</div>
-
-<div class="grid">
-    <button class="btn-smg" onclick="run('AIRES')">❄️ AIRES<br><small>29 Marcas / Split / Inv</small></button>
-    <button class="btn-smg" onclick="run('PROTO')">🛡️ PROTOCOLO<br><small>JVTRONIC / Amp</small></button>
-    <button class="btn-smg" onclick="run('MURA')">⚡ MURACHI<br><small>10k uF / Toroidal</small></button>
-    <button class="btn-smg" onclick="run('CLIE')">👥 CLIENTES<br><small>Zonas / Garantía</small></button>
-    <button class="btn-smg" onclick="run('RADAR')">📡 RADAR<br><small>Clima / Lluvia</small></button>
-    <button class="btn-smg" onclick="run('DINERO')">💰 COBRO<br><small>Tasa BCV / $40</small></button>
+<div id="main-grid" class="grid">
+    <button class="btn-smg" onclick="menu('AIRES')">❄️ AIRES<br><small>Marcas / BTU</small></button>
+    <button class="btn-smg" onclick="menu('NEVERAS')">🧊 L. BLANCA<br><small>Neveras / BM</small></button>
+    <button class="btn-smg" onclick="menu('PROTO')">🛡️ PROTOCOLO<br><small>JVTRONIC</small></button>
+    <button class="btn-smg" onclick="menu('RADAR')">📡 RADAR<br><small>Clima / GPS</small></button>
 </div>
 
 <div class="footer">
-    <input type="file" accept="image/*" capture="environment" id="cam" style="display:none" onchange="file('Foto')">
-    <button class="action-btn" onclick="document.getElementById('cam').click()">📷</button>
-    
-    <button class="mic-main" onclick="toggleMic()">🎤</button>
-    
-    <input type="file" accept="video/*" capture="environment" id="vid" style="display:none" onchange="file('Video')">
-    <button class="action-btn" onclick="document.getElementById('vid').click()">🎥</button>
+    <button class="btn-smg" style="width: 50px; height: 50px;" onclick="location.reload()">🔄</button>
+    <button class="mic-btn" onclick="toggleMic()">🎤</button>
+    <button class="btn-smg" style="width: 50px; height: 50px;" onclick="speak('Resumen de hoy: 3 aires revisados y una nevera BM.')">📂</button>
 </div>
 
 <script>
     const log = document.getElementById('monitor');
+    const input = document.getElementById('user-input');
+
     function speak(t) {
-        const s = window.speechSynthesis;
         const u = new SpeechSynthesisUtterance(t);
         u.lang = 'es-ES'; u.rate = 1; u.pitch = 1.1;
-        s.speak(u);
+        window.speechSynthesis.speak(u);
     }
 
-    function run(type) {
-        let txt = "";
-        if(type==='AIRES') txt = "Cargando marcas: Damasco, Green Plus, Arti y 29 más. Constante 17 activa.";
-        if(type==='PROTO') txt = "Guía JVTRONIC: Seteé amperaje y voltajes de corte antes de arrancar.";
-        if(type==='MURA') txt = "Proyecto Murachi: Banco de capacitores listo para el arranque, amo.";
-        if(type==='RADAR') txt = "Radar: 24 grados en Los Guayos. Humedad alta, posible lluvia en breve.";
-        if(type==='DINERO') txt = "Tarifa base: 40 dólares. Verificando tasa BCV actualizada.";
-        if(type==='CLIE') txt = "Abriendo base de datos de clientes por zona y estatus de garantía.";
-
-        log.innerHTML = `> SUBMENÚ: ${type}<br>> ${txt}`;
-        speak(txt);
+    function menu(tipo) {
+        let content = "";
+        let audio = "";
+        if(tipo === 'AIRES') {
+            audio = "Entrando a manuales de Aires. Elija marca.";
+            content = `<b>[CATÁLOGO DE AIRES]</b><br>
+                <div class="sub-btn" onclick="info('DAMASCO')">DAMASCO</div>
+                <div class="sub-btn" onclick="info('GREEN')">GREEN PLUS</div>
+                <div class="sub-btn" onclick="info('ARTI')">ARTI</div><br>
+                <div class="sub-btn" onclick="info('BTU')">TABLA BTU</div>`;
+        }
+        if(tipo === 'NEVERAS') {
+            audio = "Manuales de Línea Blanca disponibles.";
+            content = `<b>[LÍNEA BLANCA]</b><br>
+                <div class="sub-btn" onclick="info('BM')">NEVERA BM</div>
+                <div class="sub-btn" onclick="info('SAMSUNG')">SAMSUNG INV</div>
+                <div class="sub-btn" onclick="info('MABE')">MABE / WHIRL</div>`;
+        }
+        if(tipo === 'PROTO') {
+            audio = "Abriendo protocolo JVTRONIC.";
+            content = `<b>[JVTRONIC SMG]</b><br>
+                - Set Voltaje: 110V/220V +/- 10%<br>
+                - Amp de seguridad: Ver placa<br>
+                - Tiempo de espera: 180 seg.`;
+        }
+        if(tipo === 'RADAR') {
+            audio = "Sincronizando clima en Los Guayos.";
+            content = `<b>[ESTADO DEL CLIMA]</b><br>
+                📍 Ubicación: Los Guayos, Carb.<br>
+                🌡️ Temp: 24°C (Fresco)<br>
+                ⚠️ Alerta: Humedad alta.`;
+        }
+        log.innerHTML = `> ${content}`;
+        speak(audio);
     }
 
-    function file(tipo) {
-        log.innerHTML += `<br>> ${tipo} capturado con éxito.`;
-        speak(`${tipo} guardado, amo.`);
+    function info(item) {
+        let data = "";
+        if(item === 'GREEN') data = "Green Plus: Falla E6 es error de comunicación. Revise el cable de señal entre unidades.";
+        if(item === 'DAMASCO') data = "Damasco: Verifique sensores de pozo y ambiente. Valor normal: 5k o 10k ohmios.";
+        if(item === 'BTU') data = "Tabla: 12k BTU (R410A) = 115-125 PSI. 18k BTU = 110-120 PSI.";
+        if(item === 'BM') data = "Nevera BM: Error de parpadeo. Revise bimetal y ventilador del freezer.";
+        
+        log.innerHTML += `<br><br>> <b>${item}:</b> ${data}`;
+        speak(data);
+    }
+
+    function checkEnter(e) {
+        if(e.key === 'Enter') {
+            const val = input.value.toUpperCase();
+            if(val.includes("GREEN")) info('GREEN');
+            else if(val.includes("DAMASCO")) info('DAMASCO');
+            else if(val.includes("BTU")) info('BTU');
+            else {
+                log.innerHTML += `<br>> <b>BUSCANDO:</b> ${val}... No hay datos offline exactos.`;
+                speak("No tengo esa información grabada todavía, amo.");
+            }
+            input.value = "";
+        }
     }
 
     function toggleMic() {
-        speak("Dígame, amo. Lo escucho.");
-        log.innerHTML += "<br>> ESCUCHANDO REPORTE...";
+        speak("Dígame, amo. ¿Qué marca estamos revisando?");
+        log.innerHTML += "<br>> ESCUCHANDO REPORTE DE VOZ...";
     }
 </script>
-
 </body>
 </html>
