@@ -2,126 +2,108 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <title>MATZUMI - ANATO SMG</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MATZUMI V24 - ANATO SMG</title>
     <style>
-        :root { --neon: #00f2ff; --green: #2ecc71; --bg: #050505; }
-        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; height: 100vh; overflow-x: hidden; }
-        #monitor { 
-            background: #000; border: 2px solid var(--green); height: 120px; 
-            border-radius: 8px; padding: 15px; overflow-y: auto; color: var(--green); 
-            font-family: monospace; font-size: 14px; margin-bottom: 10px;
+        :root { --azul-smg: #0066ff; --neon-matz: #39ff14; --bg: #050505; }
+        body { 
+            background: var(--bg); color: white; font-family: Arial, sans-serif; 
+            margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden;
         }
-        .seccion { display: none; flex-direction: column; gap: 10px; }
-        .active { display: flex; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .btn-smg { 
-            background: #1a1a1a; border: 1px solid #444; color: white; 
-            border-radius: 12px; padding: 15px 5px; font-weight: bold; cursor: pointer;
+        /* ENCABEZADO FIJO */
+        .header { text-align: center; padding: 20px 0 10px 0; border-bottom: 2px solid var(--azul-smg); }
+        .empresa { color: var(--azul-smg); font-size: 22px; font-weight: bold; text-transform: uppercase; }
+        .matzumi { color: var(--neon-matz); font-size: 32px; font-weight: bold; text-shadow: 0 0 15px var(--neon-matz); }
+        
+        /* RADAR DINÁMICO */
+        .radar { 
+            display: flex; justify-content: space-between; padding: 12px 25px; 
+            background: #111; font-weight: bold; font-size: 15px; border-bottom: 1px solid #222;
         }
-        select { 
-            width: 100%; background: #111; color: var(--neon); border: 1px solid var(--green); 
-            padding: 12px; border-radius: 8px; font-size: 16px; margin-bottom: 5px;
+
+        /* PANTALLA CENTRAL (LETRAS GRANDES) */
+        #display-text {
+            flex-grow: 1; padding: 30px; display: flex; align-items: center; justify-content: center;
+            text-align: center; font-size: 36px; font-weight: bold; color: #ffffff;
+            background: radial-gradient(circle, #1a1a1a 0%, #000 100%); line-height: 1.3;
+            text-shadow: 2px 2px 4px #000;
         }
-        .diag-btn { background: #002233; border: 1px solid var(--neon); color: var(--neon); }
-        .back { background: #331111; border-color: #ff4444; grid-column: span 2; padding: 10px; border-radius: 8px; color: white; margin-top: 10px; }
+
+        /* CONTROLES INFERIORES */
+        .footer { 
+            display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 15px; 
+            padding: 35px 20px; background: #0a0a0a; border-top: 2px solid #1a1a1a;
+            align-items: center;
+        }
+        .btn-circle {
+            border-radius: 50%; border: none; display: flex; align-items: center; 
+            justify-content: center; cursor: pointer; transition: 0.2s; color: white;
+        }
+        .btn-cam { background: #2a2a2a; height: 75px; width: 75px; font-size: 28px; border: 1px solid #444; }
+        .btn-mic { 
+            background: #cc0000; height: 110px; width: 110px; font-size: 50px;
+            box-shadow: 0 0 20px #cc0000;
+        }
+        /* ESTADO ACTIVO MIC */
+        .mic-on { background: var(--neon-matz) !important; color: black !important; box-shadow: 0 0 35px var(--neon-matz) !important; }
     </style>
 </head>
 <body>
 
-<div id="monitor">> MATZUMI V24 READY...<br>> ESPERANDO SELECCIÓN, AMO.</div>
+    <div class="header">
+        <div class="empresa">MULTISERVICIO ANATO SMG</div>
+        <div class="matzumi">MATZUMI</div>
+    </div>
 
-<div id="menu-main" class="seccion active grid">
-    <button class="btn-smg" onclick="nav('aires')">❄️ AIRE ACOND.</button>
-    <button class="btn-smg" onclick="nav('lblanca')">🧺 LÍNEA BLANCA</button>
-    <button class="btn-smg" onclick="nav('presiones')">📊 TABLA P/T</button>
-    <button class="btn-smg" onclick="nav('proto')">🛡️ PROTOCOLO</button>
-</div>
+    <div class="radar">
+        <div id="ubicacion">📍 LOS GUAYOS...</div>
+        <div id="temperatura">🌡️ --°C</div>
+    </div>
 
-<div id="menu-tipo-aire" class="seccion grid">
-    <button class="btn-smg" onclick="setTipo('Split')">SPLIT</button>
-    <button class="btn-smg" onclick="setTipo('Ventana')">VENTANA</button>
-    <button class="btn-smg" onclick="setTipo('Inverter')">INVERTER</button>
-    <button class="btn-smg" onclick="setTipo('Piso-Techo')">PISO TECHO</button>
-    <button class="back" onclick="nav('main')">⬅️ VOLVER</button>
-</div>
+    <div id="display-text">
+        LISTA PARA LA ORDEN, AMO.
+    </div>
 
-<div id="menu-selectores" class="seccion">
-    <select id="sel-marca">
-        <option value="">-- ELIJA MARCA (32) --</option>
-        <option>DAMASCO</option><option>GREEN PLUS</option><option>SAMSUNG</option><option>LG</option>
-        <option>MABE</option><option>HAIER</option><option>KHALED</option><option>PREMIUM</option>
-        <option>ROYAL</option><option>LUMINUX</option><option>ARTIC</option><option>FRIGIDAIRE</option>
-    </select>
-    <select id="sel-btu" onchange="activarDiagnostico()">
-        <option value="">-- CAPACIDAD BTU --</option>
-        <option>5000</option><option>12000</option><option>18000</option><option>24000</option>
-    </select>
-    <button class="back" onclick="nav('aires')">⬅️ CAMBIAR TIPO</button>
-</div>
+    <div class="footer">
+        <button class="btn-circle btn-cam" onclick="accion('FOTO')">📸</button>
+        
+        <button class="btn-circle btn-mic" id="main-mic" 
+                onmousedown="startListening()" 
+                onmouseup="stopListening()"
+                ontouchstart="startListening()"
+                ontouchend="stopListening()">🎤</button>
+        
+        <button class="btn-circle btn-cam" onclick="accion('VIDEO')">🎥</button>
+    </div>
 
-<div id="menu-diagnostico" class="seccion grid">
-    <div style="grid-column: span 2; color: var(--green); text-align: center; font-size: 12px;" id="info-equipo"></div>
-    <button class="btn-smg diag-btn" onclick="verData('errores')">⚠️ CÓDIGOS ERROR</button>
-    <button class="btn-smg diag-btn" onclick="verData('fallas')">🛠️ FALLAS COMUNES</button>
-    <button class="btn-smg diag-btn" onclick="verData('tarjetas')">🔌 DATOS TARJETA</button>
-    <button class="btn-smg diag-btn" onclick="verData('sensores')">🌡️ SENSORES (K)</button>
-    <button class="back" onclick="nav('selectores')">⬅️ RECONFIGURAR</button>
-</div>
-
-<script>
-    const mon = document.getElementById('monitor');
-    let config = { tipo: '', marca: '', btu: '' };
-
-    function speak(t) {
-        window.speechSynthesis.cancel();
-        const u = new SpeechSynthesisUtterance(t);
-        u.lang = 'es-ES'; u.rate = 1;
-        window.speechSynthesis.speak(u);
-    }
-
-    function nav(dest) {
-        document.querySelectorAll('.seccion').forEach(s => s.classList.remove('active'));
-        if(dest === 'main') document.getElementById('menu-main').classList.add('active');
-        if(dest === 'aires') document.getElementById('menu-tipo-aire').classList.add('active');
-        if(dest === 'selectores') document.getElementById('menu-selectores').classList.add('active');
-        if(dest === 'presiones') {
-            document.getElementById('menu-main').classList.add('active');
-            mon.innerHTML = "> R410A: 112 PSI<br>> R22: 61 PSI<br>> C-23 (25°C)";
-            speak("Amo, la tabla de presiones Anato S.M.G. indica 112 P.S.I. para R410A.");
+    <script>
+        // Función para actualizar Radar cada 30 segundos
+        function updateRadar() {
+            // Ubicación fija según su zona
+            document.getElementById('ubicacion').innerText = "📍 LOS GUAYOS, CAR";
+            
+            // Simulación de temperatura (esto se conectará a la API de clima)
+            let tempSimulada = 24 + Math.floor(Math.random() * 6);
+            document.getElementById('temperatura').innerText = `🌡️ ${tempSimulada}°C`;
         }
-    }
 
-    function setTipo(t) {
-        config.tipo = t;
-        nav('selectores');
-        mon.innerHTML = `> EQUIPO: ${t}<br>> SELECCIONE MARCA Y BTU.`;
-    }
+        setInterval(updateRadar, 30000); 
+        updateRadar();
 
-    function activarDiagnostico() {
-        config.marca = document.getElementById('sel-marca').value;
-        config.btu = document.getElementById('sel-btu').value;
-        if(config.marca && config.btu) {
-            document.getElementById('menu-selectores').classList.remove('active');
-            document.getElementById('menu-diagnostico').classList.add('active');
-            document.getElementById('info-equipo').innerText = `${config.tipo} ${config.marca} ${config.btu} BTU`;
-            speak(`Configuración completa. Abriendo panel de diagnóstico para ${config.marca}.`);
+        function startListening() {
+            document.getElementById('main-mic').classList.add('mic-on');
+            document.getElementById('display-text').innerText = "DÍGAME, AMO. LO ESCUCHO...";
         }
-    }
 
-    function verData(modo) {
-        let r = "";
-        if(config.marca === 'DAMASCO') {
-            if(modo === 'errores') r = "Damasco: 5 parpadeos es falta de gas. 3 parpadeos falla de sensor.";
-            if(modo === 'sensores') r = "Sensores Damasco: Ambiente 10k, Pozo 5k a 25 grados.";
-            if(modo === 'fallas') r = "Falla común: Capacitor de ventilador de 1.5 microfaradios se agota.";
-            if(modo === 'tarjetas') r = "Tarjeta usa relé de 20 amperios. Voltaje de control 12 voltios DC.";
-        } else {
-            r = `Cargando información técnica de ${modo} para ${config.marca}...`;
+        function stopListening() {
+            document.getElementById('main-mic').classList.remove('mic-on');
+            document.getElementById('display-text').innerText = "BUSCANDO EN LA BASE DE DATOS...";
+            // Aquí dispararemos la consulta al Excel/Cerebro
         }
-        mon.innerHTML = `> ${modo.toUpperCase()}:<br>${r}`;
-        speak(r);
-    }
-</script>
+
+        function accion(tipo) {
+            document.getElementById('display-text').innerText = `ACTIVANDO ${tipo}...`;
+        }
+    </script>
 </body>
 </html>
