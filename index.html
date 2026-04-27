@@ -2,88 +2,99 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>MATZUMI - SENSOR ALTA VELOCIDAD</title>
+    <title>MATZUMI - SISTEMA DUAL</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <style>
-        :root { --azul-smg: #0066ff; --neon: #39ff14; --bg: #050505; }
-        body { background: var(--bg); color: white; font-family: 'Courier New', monospace; margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; -webkit-user-select: none; }
+        :root { --azul: #0066ff; --neon: #39ff14; --bg: #050505; }
+        body { background: var(--bg); color: white; font-family: 'Arial', sans-serif; margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; -webkit-user-select: none; }
         
-        .header { text-align: center; padding: 10px; border-bottom: 2px solid var(--azul-smg); background: #000; }
-        .matzumi { color: var(--neon); font-size: 30px; font-weight: bold; text-shadow: 0 0 8px var(--neon); letter-spacing: 2px; }
+        .header { text-align: center; padding: 10px; border-bottom: 2px solid var(--azul); background: #000; }
+        .matzumi { color: var(--neon); font-size: 32px; font-weight: bold; text-shadow: 0 0 10px var(--neon); }
         
         .radar-box { display: flex; justify-content: space-between; padding: 8px 15px; background: #111; font-size: 12px; border-bottom: 1px solid #222; }
-        .live-dot { height: 6px; width: 6px; background: #ff0000; border-radius: 50%; display: inline-block; margin-right: 5px; animation: pulse 0.5s infinite; }
-        @keyframes pulse { 0% {transform: scale(1);} 50% {transform: scale(1.5); opacity: 0.5;} 100% {transform: scale(1);} }
-
-        #pantalla { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; border: 2px solid #111; margin: 10px; border-radius: 10px; }
-        #status { font-size: 28px; text-align: center; line-height: 1.4; color: #fff; }
         
-        /* Estilo tipo Scanner */
-        .scan-line { width: 100%; height: 2px; background: rgba(57, 255, 20, 0.2); position: absolute; top: 0; animation: scan 3s linear infinite; }
-        @keyframes scan { from {top: 0;} to {top: 100%;} }
-
-        .controles { display: grid; grid-template-columns: 1fr 1.5fr 1fr; gap: 15px; padding: 20px; background: #000; border-top: 1px solid #222; }
-        .btn-side { background: #151515; border: 1px solid #333; border-radius: 15px; height: 65px; display: flex; justify-content: center; align-items: center; position: relative; font-size: 25px; }
-        .btn-side input { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+        #pantalla { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 25px; text-align: center; background: radial-gradient(circle, #111, #000); position: relative; }
         
-        .btn-mic { background: radial-gradient(circle, #aa0000, #660000); height: 90px; width: 90px; border-radius: 50%; border: 4px solid #222; display: flex; justify-content: center; align-items: center; font-size: 40px; margin: 0 auto; box-shadow: 0 0 15px rgba(0,0,0,0.8); transition: 0.1s; }
-        .btn-mic:active { background: var(--neon); color: black; transform: scale(0.95); box-shadow: 0 0 25px var(--neon); }
+        /* TEXTO GIGANTE PARA LECTURA RÁPIDA */
+        #status { font-size: 30px; font-weight: bold; line-height: 1.3; color: #ffffff; text-transform: uppercase; transition: 0.3s; }
+        .sub-info { font-size: 14px; color: var(--neon); margin-top: 15px; letter-spacing: 1px; }
+
+        .controles { display: grid; grid-template-columns: 1fr 1.5fr 1fr; gap: 15px; padding: 25px; background: #000; border-top: 1px solid #222; }
+        .btn-side { background: #1a1a1a; border: 1px solid #444; border-radius: 15px; height: 65px; display: flex; justify-content: center; align-items: center; font-size: 25px; position: relative; }
+        .btn-side input { position: absolute; opacity: 0; width: 100%; height: 100%; }
+        
+        .btn-mic { background: radial-gradient(circle, #aa0000, #660000); height: 100px; width: 100px; border-radius: 50%; border: 4px solid #333; display: flex; justify-content: center; align-items: center; font-size: 45px; margin: 0 auto; box-shadow: 0 0 20px rgba(255,0,0,0.4); }
+        .btn-mic:active { background: var(--neon); color: black; transform: scale(0.95); box-shadow: 0 0 30px var(--neon); }
     </style>
 </head>
 <body>
-    <div class="scan-line"></div>
     <div class="header">
-        <div style="font-size: 10px; color: var(--azul-smg); letter-spacing: 1px;">MULTISERVICIO ANATO SMG</div>
+        <div style="font-size: 10px; color: var(--azul);">MULTISERVICIO ANATO SMG</div>
         <div class="matzumi">MATZUMI</div>
     </div>
     
     <div class="radar-box">
-        <div><span class="live-dot"></span>RADAR: <span id="loc">VZLA/CARABOBO</span></div>
-        <div id="weather" style="color: var(--neon);">🌡️ 27.0°C [CALIBRANDO]</div>
+        <div>📍 LOS GUAYOS, CAR</div>
+        <div id="weather" style="color: var(--neon);">🌡️ 27.5°C</div>
     </div>
 
-    <div id="pantalla">
-        <div id="status">LISTO PARA LA ORDEN, AMO.</div>
+    <div id="pantalla" onclick="activarAudio()">
+        <div id="status">PULSE EL MICRÓFONO PARA HABLAR</div>
+        <div class="sub-info" id="debug">SISTEMA GÉNESIS LISTO</div>
     </div>
 
     <div class="controles">
-        <div class="btn-side">📸<input type="file" accept="image/*" capture="environment" onchange="updateMsg('FOTO ENVIADA')"></div>
+        <div class="btn-side">📸<input type="file" accept="image/*" capture="environment" onchange="responder('IMAGEN RECIBIDA. ANALIZANDO COMPONENTES.')"></div>
         <div class="btn-mic" id="micBtn">🎙️</div>
-        <div class="btn-side">🎥<input type="file" accept="video/*" capture="environment" onchange="updateMsg('VIDEO ENVIADO')"></div>
+        <div class="btn-side">🎥<input type="file" accept="video/*" capture="environment" onchange="responder('VIDEO REGISTRADO EN LA BITÁCORA.')"></div>
     </div>
 
     <script>
-        // MOTOR DE SENSOR ULTRA-RÁPIDO
-        let tempBase = 27.0;
-        function updateSensor() {
-            // Genera una pequeña fluctuación decimal cada 2 segundos
-            let fluctuacion = (Math.random() * 0.5 - 0.25).toFixed(1);
-            let tempActual = (tempBase + parseFloat(fluctuacion)).toFixed(1);
-            document.getElementById('weather').innerText = `🌡️ ${tempActual}°C [ACTIVO]`;
-        }
-        setInterval(updateSensor, 2000);
+        const st = document.getElementById('status');
+        const db = document.getElementById('debug');
+        let audioActivado = false;
 
-        function updateMsg(txt) {
-            document.getElementById('status').innerText = txt;
-            setTimeout(() => { document.getElementById('status').innerText = "LISTO PARA LA ORDEN, AMO."; }, 2000);
+        function activarAudio() {
+            if(!audioActivado) {
+                audioActivado = true;
+                responder("Hola, amo. ¿Cómo estás? Sistema de audio activado.");
+            }
+        }
+
+        function responder(texto) {
+            // 1. Mostrar en pantalla (GIGANTE)
+            st.innerText = texto;
+            
+            // 2. Hablar por altavoz
+            if ('speechSynthesis' in window) {
+                const mensaje = new SpeechSynthesisUtterance(texto);
+                mensaje.lang = 'es-ES';
+                mensaje.pitch = 1;
+                mensaje.rate = 1;
+                window.speechSynthesis.speak(mensaje);
+            }
         }
 
         const btn = document.getElementById('micBtn');
-        const st = document.getElementById('status');
-
-        // Eventos táctiles para evitar el menú de copiado
         btn.addEventListener('touchstart', (e) => {
             e.preventDefault();
-            st.innerHTML = "GRABANDO PROCESO<br>EN EXCEL...";
+            st.innerText = "ESCUCHANDO...";
             st.style.color = "#39ff14";
         });
 
         btn.addEventListener('touchend', (e) => {
             e.preventDefault();
-            st.innerHTML = "DATOS ENVIADOS A<br>MATZUMI.";
             st.style.color = "#fff";
-            setTimeout(() => { st.innerText = "ESPERANDO SIGUIENTE PASO..."; }, 1500);
+            // Simulación de respuesta de la base de datos Daewoo
+            responder("ERROR E3 DETECTADO. REVISAR CAPACITOR DEL MOTOR VENTILADOR.");
+            db.innerText = "DATOS DE EXCEL CARGADOS";
         });
+
+        // Simulación de sensor dinámico
+        setInterval(() => {
+            let t = (27 + Math.random()).toFixed(1);
+            document.getElementById('weather').innerText = `🌡️ ${t}°C`;
+        }, 2500);
     </script>
 </body>
 </html>
