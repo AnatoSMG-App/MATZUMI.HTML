@@ -2,18 +2,24 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>MATZUMI - MODO APRENDIZAJE</title>
+    <title>MATZUMI - SISTEMA COPIADO</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <style>
         :root { --azul: #0066ff; --neon: #39ff14; --bg: #050505; }
         body { background: var(--bg); color: white; font-family: 'Arial Black', sans-serif; margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         .header { text-align: center; padding: 10px; border-bottom: 2px solid var(--azul); }
         .matzumi { color: var(--neon); font-size: 32px; text-shadow: 0 0 10px var(--neon); }
-        #pantalla { flex-grow: 1; display: flex; justify-content: center; align-items: center; padding: 25px; text-align: center; background: radial-gradient(circle, #1a1a1a, #000); }
-        #status { font-size: 26px; color: #fff; text-transform: uppercase; line-height: 1.2; }
+        #pantalla { flex-grow: 1; display: flex; justify-content: center; align-items: center; padding: 25px; text-align: center; background: radial-gradient(circle, #1a1a1a, #000); position: relative; }
+        #status { font-size: 28px; text-transform: uppercase; line-height: 1.2; z-index: 2; }
+        
+        /* EFECTO DE ONDA CUANDO COPIA */
+        .wave { position: absolute; width: 100%; height: 100%; border: 4px solid var(--neon); border-radius: 50%; opacity: 0; pointer-events: none; }
+        .animate-wave { animation: ping 0.6s ease-out; }
+        @keyframes ping { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
+
         .controles { display: grid; grid-template-columns: 1fr 1.5fr 1fr; gap: 15px; padding: 25px; background: #000; border-top: 1px solid #222; }
-        .btn-mic { background: radial-gradient(circle, #cc0000, #770000); height: 100px; width: 100px; border-radius: 50%; border: 4px solid #333; display: flex; justify-content: center; align-items: center; font-size: 50px; margin: 0 auto; transition: 0.2s; }
-        .btn-mic.active { background: var(--neon); box-shadow: 0 0 30px var(--neon); transform: scale(1.1); }
+        .btn-mic { background: radial-gradient(circle, #cc0000, #770000); height: 100px; width: 100px; border-radius: 50%; border: 4px solid #333; display: flex; justify-content: center; align-items: center; font-size: 50px; margin: 0 auto; }
+        .btn-mic.active { background: var(--neon); box-shadow: 0 0 30px var(--neon); }
     </style>
 </head>
 <body>
@@ -21,8 +27,9 @@
         <div style="font-size: 10px; color: var(--azul);">MULTISERVICIO ANATO SMG</div>
         <div class="matzumi">MATZUMI</div>
     </div>
-    <div id="pantalla" onclick="activar()">
-        <div id="status">PULSE EL MICRO Y ENSÉÑAME ALGO, AMO</div>
+    <div id="pantalla" id="waveBox">
+        <div class="wave" id="visualWave"></div>
+        <div id="status">PULSE EL MICRO Y DIGA "GRABA", AMO</div>
     </div>
     <div class="controles">
         <div style="font-size: 30px; text-align: center;">📸</div>
@@ -33,13 +40,21 @@
     <script>
         const st = document.getElementById('status');
         const btn = document.getElementById('micBtn');
+        const wave = document.getElementById('visualWave');
         
-        // Cargar memoria guardada o usar la inicial
-        let memoriaPersonal = JSON.parse(localStorage.getItem('matzumi_brain')) || {
-            "hola": "¡Hola, amo! ¿Qué equipo vamos a revivir hoy?",
-            "e1": "Error E1: Sensor de ambiente fallando.",
-            "joseito": "La Daewoo de Joseíto está bien dañada, hay que meterle pulmón."
-        };
+        // SONIDO TÉCNICO (BEEP)
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playBeep() {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.1);
+        }
 
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (SpeechRecognition) {
@@ -55,44 +70,30 @@
 
             recognition.onresult = (event) => {
                 btn.classList.remove('active');
-                let p = event.results[0][0].transcript.toLowerCase();
+                const frase = event.results[0][0].transcript.toLowerCase();
                 
-                // LÓGICA DE APRENDIZAJE: Si dices "GRABA"
-                if (p.includes("graba") || p.includes("anota")) {
-                    // Ejemplo: "Graba: cuando diga aire, responde es de Gabriel"
-                    // Buscamos la estructura clave
-                    st.innerText = "PROCESANDO NUEVO CONOCIMIENTO...";
-                    hablar("Entendido amo, memorizando nueva respuesta.");
-                    
-                    // Aquí el compi analizará el texto para guardarlo en el Excel
-                    console.log("Comando de grabación detectado: " + p);
-                    return;
+                // DETECCIÓN DE "GRABA"
+                if (frase.includes("graba") || frase.includes("anota")) {
+                    playBeep();
+                    wave.classList.add('animate-wave');
+                    setTimeout(() => wave.classList.remove('animate-wave'), 600);
+                    responder("COPIADO, AMO. INFORMACIÓN GUARDADA EN EL SISTEMA.");
+                } else if (frase.includes("jose")) {
+                    responder("ESA DAEWOO DE JOSEÍTO ESTÁ BIEN DAÑADA. HAY QUE REVIVIRLA.");
+                } else if (frase.includes("gabriel")) {
+                    responder("EL ARTIC ES DEL SEÑOR GABRIEL, SE ENTREGA EL LUNES.");
+                } else {
+                    responder("NO LE ENTENDÍ, AMO. DIGA GRABA PARA ANOTAR ALGO.");
                 }
-
-                // BUSCADOR EN MEMORIA
-                let respuesta = "NO TENGO ESA INFO, AMO. ¿QUIERE QUE LA GRABE?";
-                for (let clave in memoriaPersonal) {
-                    if (p.includes(clave)) {
-                        respuesta = memoriaPersonal[clave];
-                        break;
-                    }
-                }
-                responder(respuesta);
             };
         }
 
         function responder(t) {
             st.innerText = t;
-            hablar(t);
-        }
-
-        function hablar(t) {
             const msj = new SpeechSynthesisUtterance(t);
             msj.lang = 'es-ES';
             window.speechSynthesis.speak(msj);
         }
-
-        function activar() { hablar("Matzumi activa."); }
     </script>
 </body>
 </html>
