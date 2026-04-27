@@ -3,128 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MATZUMI V22 - FULL SISTEMA SMG</title>
+    <title>MATZUMI V24 - ANATO SMG</title>
     <style>
         :root { --neon: #00f2ff; --green: #2ecc71; --bg: #050505; }
-        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; height: 100vh; }
-        .header { text-align: center; border-bottom: 2px solid var(--neon); padding-bottom: 5px; }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; height: 100vh; overflow-x: hidden; }
         #monitor { 
-            background: #000; border: 2px solid var(--green); height: 150px; 
+            background: #000; border: 2px solid var(--green); height: 120px; 
             border-radius: 8px; padding: 15px; overflow-y: auto; color: var(--green); 
-            font-family: 'Consolas', monospace; font-size: 14px; box-shadow: inset 0 0 15px #003300; margin: 10px 0;
-        }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .btn-smg { 
-            background: #1a1a1a; border: 1px solid #444; color: white; border-radius: 12px; 
-            padding: 15px 5px; font-size: 13px; font-weight: bold; cursor: pointer;
-        }
-        select { 
-            width: 100%; background: #222; color: var(--neon); border: 1px solid var(--green); 
-            padding: 10px; border-radius: 8px; margin-bottom: 10px; font-size: 16px;
+            font-family: monospace; font-size: 14px; margin-bottom: 10px;
         }
         .seccion { display: none; flex-direction: column; gap: 10px; }
         .active { display: flex; }
-        .back-btn { background: #331111; border-color: #ff4444; grid-column: span 2; margin-top: 10px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .btn-smg { 
+            background: #1a1a1a; border: 1px solid #444; color: white; 
+            border-radius: 12px; padding: 15px 5px; font-weight: bold; cursor: pointer;
+        }
+        select { 
+            width: 100%; background: #111; color: var(--neon); border: 1px solid var(--green); 
+            padding: 12px; border-radius: 8px; font-size: 16px; margin-bottom: 5px;
+        }
+        .diag-btn { background: #002233; border: 1px solid var(--neon); color: var(--neon); }
+        .back { background: #331111; border-color: #ff4444; grid-column: span 2; padding: 10px; border-radius: 8px; color: white; margin-top: 10px; }
     </style>
 </head>
 <body>
 
-<div class="header">
-    <div style="color: var(--neon); font-size: 18px; font-weight: bold;">MULTISERVICIO ANATO SMG</div>
-    <div style="color: var(--green); font-size: 13px;">MATZUMI V22 - ASISTENTE TÉCNICO</div>
-</div>
-
-<div id="monitor">> MATZUMI ONLINE...<br>> AMO, SELECCIONE UN ÁREA DE TRABAJO.</div>
+<div id="monitor">> MATZUMI V24 READY...<br>> ESPERANDO SELECCIÓN, AMO.</div>
 
 <div id="menu-main" class="seccion active grid">
-    <button class="btn-smg" onclick="navegar('aires')">❄️ AIRE ACOND.</button>
-    <button class="btn-smg" onclick="navegar('lblanca')">🧺 LÍNEA BLANCA</button>
-    <button class="btn-smg" onclick="navegar('presiones')">📊 TABLA P/T</button>
-    <button class="btn-smg" onclick="navegar('proto')">🛡️ PROTOCOLO</button>
+    <button class="btn-smg" onclick="nav('aires')">❄️ AIRE ACOND.</button>
+    <button class="btn-smg" onclick="nav('lblanca')">🧺 LÍNEA BLANCA</button>
+    <button class="btn-smg" onclick="nav('presiones')">📊 TABLA P/T</button>
+    <button class="btn-smg" onclick="nav('proto')">🛡️ PROTOCOLO</button>
 </div>
 
-<div id="menu-aires" class="seccion">
-    <div style="color:var(--neon); text-align:center; font-weight:bold;">TIPO DE EQUIPO:</div>
-    <div class="grid">
-        <button class="btn-smg" onclick="configAire('Split')">SPLIT</button>
-        <button class="btn-smg" onclick="configAire('Ventana')">VENTANA</button>
-        <button class="btn-smg" onclick="configAire('Inverter')">INVERTER</button>
-        <button class="btn-smg" onclick="configAire('Piso-Techo')">PISO TECHO</button>
-        <button class="btn-smg back-btn" onclick="navegar('main')">⬅️ VOLVER</button>
-    </div>
+<div id="menu-tipo-aire" class="seccion grid">
+    <button class="btn-smg" onclick="setTipo('Split')">SPLIT</button>
+    <button class="btn-smg" onclick="setTipo('Ventana')">VENTANA</button>
+    <button class="btn-smg" onclick="setTipo('Inverter')">INVERTER</button>
+    <button class="btn-smg" onclick="setTipo('Piso-Techo')">PISO TECHO</button>
+    <button class="back" onclick="nav('main')">⬅️ VOLVER</button>
 </div>
 
-<div id="selector-aire" class="seccion">
-    <label>MARCA DEL EQUIPO:</label>
-    <select id="marca-aire">
-        <option value="">-- SELECCIONE MARCA --</option>
-        <option>DAMASCO</option><option>GREEN PLUS</option><option>SAMSUNG</option>
-        <option>LG</option><option>ARTIC</option><option>MABE</option>
-        <option>CARRIER</option><option>FRIGIDAIRE</option><option>PANASONIC</option>
-        <option>HAIER</option><option>DAIKIN</option><option>YORK</option>
-        </select>
-
-    <label>CAPACIDAD (BTU):</label>
-    <select id="btu-aire" onchange="procesarFalla()">
-        <option value="">-- SELECCIONE BTU --</option>
-        <option value="5000">5.000 BTU</option>
-        <option value="12000">12.000 BTU</option>
-        <option value="18000">18.000 BTU</option>
-        <option value="24000">24.000 BTU</option>
-        <option value="36000">36.000 BTU</option>
+<div id="menu-selectores" class="seccion">
+    <select id="sel-marca">
+        <option value="">-- ELIJA MARCA (32) --</option>
+        <option>DAMASCO</option><option>GREEN PLUS</option><option>SAMSUNG</option><option>LG</option>
+        <option>MABE</option><option>HAIER</option><option>KHALED</option><option>PREMIUM</option>
+        <option>ROYAL</option><option>LUMINUX</option><option>ARTIC</option><option>FRIGIDAIRE</option>
     </select>
-    <button class="btn-smg back-btn" onclick="navegar('aires')">⬅️ VOLVER A TIPOS</button>
+    <select id="sel-btu" onchange="activarDiagnostico()">
+        <option value="">-- CAPACIDAD BTU --</option>
+        <option>5000</option><option>12000</option><option>18000</option><option>24000</option>
+    </select>
+    <button class="back" onclick="nav('aires')">⬅️ CAMBIAR TIPO</button>
 </div>
 
-<div id="menu-lblanca" class="seccion grid">
-    <button class="btn-smg" onclick="hablar('Cargando sección de Neveras')">NEVERAS</button>
-    <button class="btn-smg" onclick="hablar('Cargando sección de Secadoras')">SECADORAS</button>
-    <button class="btn-smg" onclick="hablar('Cargando sección de Lavadoras')">LAVADORAS</button>
-    <button class="btn-smg" onclick="hablar('Cargando sección de Microondas')">MICROONDAS</button>
-    <button class="btn-smg" onclick="hablar('Cargando sección de Hornos')">HORNOS</button>
-    <button class="btn-smg back-btn" onclick="navegar('main')">⬅️ VOLVER</button>
+<div id="menu-diagnostico" class="seccion grid">
+    <div style="grid-column: span 2; color: var(--green); text-align: center; font-size: 12px;" id="info-equipo"></div>
+    <button class="btn-smg diag-btn" onclick="verData('errores')">⚠️ CÓDIGOS ERROR</button>
+    <button class="btn-smg diag-btn" onclick="verData('fallas')">🛠️ FALLAS COMUNES</button>
+    <button class="btn-smg diag-btn" onclick="verData('tarjetas')">🔌 DATOS TARJETA</button>
+    <button class="btn-smg diag-btn" onclick="verData('sensores')">🌡️ SENSORES (K)</button>
+    <button class="back" onclick="nav('selectores')">⬅️ RECONFIGURAR</button>
 </div>
 
 <script>
     const mon = document.getElementById('monitor');
-    let tipoActual = "";
+    let config = { tipo: '', marca: '', btu: '' };
 
-    function hablar(t) {
+    function speak(t) {
+        window.speechSynthesis.cancel();
         const u = new SpeechSynthesisUtterance(t);
         u.lang = 'es-ES'; u.rate = 1;
         window.speechSynthesis.speak(u);
     }
 
-    function navegar(destino) {
+    function nav(dest) {
         document.querySelectorAll('.seccion').forEach(s => s.classList.remove('active'));
-        if(destino === 'main') document.getElementById('menu-main').classList.add('active');
-        if(destino === 'aires') document.getElementById('menu-aires').classList.add('active');
-        if(destino === 'lblanca') document.getElementById('menu-lblanca').classList.add('active');
-        if(destino === 'presiones') {
+        if(dest === 'main') document.getElementById('menu-main').classList.add('active');
+        if(dest === 'aires') document.getElementById('menu-tipo-aire').classList.add('active');
+        if(dest === 'selectores') document.getElementById('menu-selectores').classList.add('active');
+        if(dest === 'presiones') {
             document.getElementById('menu-main').classList.add('active');
-            let p = "Para R410A con 25 grados, la baja es 112 PSI usando nuestra constante 23.";
-            mon.innerHTML = "> <b>DATA SMG:</b><br>R410A: 112 PSI<br>R22: 61 PSI<br>Saturación: 2°C";
-            hablar(p);
+            mon.innerHTML = "> R410A: 112 PSI<br>> R22: 61 PSI<br>> C-23 (25°C)";
+            speak("Amo, la tabla de presiones Anato S.M.G. indica 112 P.S.I. para R410A.");
         }
     }
 
-    function configAire(tipo) {
-        tipoActual = tipo;
-        document.getElementById('menu-aires').classList.remove('active');
-        document.getElementById('selector-aire').classList.add('active');
-        mon.innerHTML = `> MODO: ${tipo}<br>> SELECCIONE MARCA Y BTU.`;
-        hablar("Elegido aire tipo " + tipo + ". Seleccione marca y capacidad.");
+    function setTipo(t) {
+        config.tipo = t;
+        nav('selectores');
+        mon.innerHTML = `> EQUIPO: ${t}<br>> SELECCIONE MARCA Y BTU.`;
     }
 
-    function procesarFalla() {
-        const marca = document.getElementById('marca-aire').value;
-        const btu = document.getElementById('btu-aire').value;
-        if(marca && btu) {
-            let res = `Amo, para un ${tipoActual} ${marca} de ${btu} BTU, verifique sensores y presiones de trabajo.`;
-            if(marca === "GREEN PLUS") res += " Si ve Error E6, es falla de comunicación.";
-            mon.innerHTML = `> ANALIZANDO: ${tipoActual} ${marca}<br>> BTU: ${btu}<br>> STATUS: CARGANDO CÓDIGOS DE ERROR...`;
-            hablar(res);
+    function activarDiagnostico() {
+        config.marca = document.getElementById('sel-marca').value;
+        config.btu = document.getElementById('sel-btu').value;
+        if(config.marca && config.btu) {
+            document.getElementById('menu-selectores').classList.remove('active');
+            document.getElementById('menu-diagnostico').classList.add('active');
+            document.getElementById('info-equipo').innerText = `${config.tipo} ${config.marca} ${config.btu} BTU`;
+            speak(`Configuración completa. Abriendo panel de diagnóstico para ${config.marca}.`);
         }
+    }
+
+    function verData(modo) {
+        let r = "";
+        if(config.marca === 'DAMASCO') {
+            if(modo === 'errores') r = "Damasco: 5 parpadeos es falta de gas. 3 parpadeos falla de sensor.";
+            if(modo === 'sensores') r = "Sensores Damasco: Ambiente 10k, Pozo 5k a 25 grados.";
+            if(modo === 'fallas') r = "Falla común: Capacitor de ventilador de 1.5 microfaradios se agota.";
+            if(modo === 'tarjetas') r = "Tarjeta usa relé de 20 amperios. Voltaje de control 12 voltios DC.";
+        } else {
+            r = `Cargando información técnica de ${modo} para ${config.marca}...`;
+        }
+        mon.innerHTML = `> ${modo.toUpperCase()}:<br>${r}`;
+        speak(r);
     }
 </script>
 </body>
