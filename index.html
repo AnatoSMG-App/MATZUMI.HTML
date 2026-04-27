@@ -2,92 +2,88 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>MATZUMI - PROTOCOLO GENESIS</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>MATZUMI - SENSOR ALTA VELOCIDAD</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <style>
         :root { --azul-smg: #0066ff; --neon: #39ff14; --bg: #050505; }
-        body { background: var(--bg); color: white; font-family: 'Courier New', monospace; margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        body { background: var(--bg); color: white; font-family: 'Courier New', monospace; margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; -webkit-user-select: none; }
         
-        /* Prevenir que se seleccione el texto o imágenes */
-        * { -webkit-tap-highlight-color: transparent; user-select: none; }
-
         .header { text-align: center; padding: 10px; border-bottom: 2px solid var(--azul-smg); background: #000; }
-        .empresa { color: var(--azul-smg); font-size: 18px; font-weight: bold; letter-spacing: 2px; }
-        .matzumi { color: var(--neon); font-size: 32px; font-weight: bold; text-shadow: 0 0 15px var(--neon); }
+        .matzumi { color: var(--neon); font-size: 30px; font-weight: bold; text-shadow: 0 0 8px var(--neon); letter-spacing: 2px; }
         
-        .radar-status { display: flex; justify-content: space-between; padding: 8px 15px; background: #111; font-size: 12px; border-bottom: 1px solid #333; }
+        .radar-box { display: flex; justify-content: space-between; padding: 8px 15px; background: #111; font-size: 12px; border-bottom: 1px solid #222; }
+        .live-dot { height: 6px; width: 6px; background: #ff0000; border-radius: 50%; display: inline-block; margin-right: 5px; animation: pulse 0.5s infinite; }
+        @keyframes pulse { 0% {transform: scale(1);} 50% {transform: scale(1.5); opacity: 0.5;} 100% {transform: scale(1);} }
 
-        #pantalla { flex-grow: 1; padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; font-size: 28px; background: radial-gradient(circle, #111 0%, #000 100%); }
-        .msg-actual { border-left: 3px solid var(--neon); padding-left: 15px; }
-
-        .controles { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 10px; padding: 20px; background: #000; border-top: 1px solid #222; align-items: center; }
+        #pantalla { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; border: 2px solid #111; margin: 10px; border-radius: 10px; }
+        #status { font-size: 28px; text-align: center; line-height: 1.4; color: #fff; }
         
-        /* Botones de acción con input oculto para forzar cámara */
-        .btn-side { background: #1a1a1a; border: 1px solid #444; border-radius: 50%; height: 70px; width: 70px; display: flex; justify-content: center; align-items: center; position: relative; }
+        /* Estilo tipo Scanner */
+        .scan-line { width: 100%; height: 2px; background: rgba(57, 255, 20, 0.2); position: absolute; top: 0; animation: scan 3s linear infinite; }
+        @keyframes scan { from {top: 0;} to {top: 100%;} }
+
+        .controles { display: grid; grid-template-columns: 1fr 1.5fr 1fr; gap: 15px; padding: 20px; background: #000; border-top: 1px solid #222; }
+        .btn-side { background: #151515; border: 1px solid #333; border-radius: 15px; height: 65px; display: flex; justify-content: center; align-items: center; position: relative; font-size: 25px; }
         .btn-side input { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
-
-        .btn-principal { background: #800; height: 110px; width: 110px; border-radius: 50%; border: 4px solid #333; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: 0.2s; box-shadow: 0 0 20px rgba(255,0,0,0.2); }
-        .btn-principal:active { transform: scale(0.95); background: var(--neon); color: black; box-shadow: 0 0 40px var(--neon); border-color: white; }
-
-        .label-mic { font-size: 10px; margin-top: 5px; font-weight: bold; }
+        
+        .btn-mic { background: radial-gradient(circle, #aa0000, #660000); height: 90px; width: 90px; border-radius: 50%; border: 4px solid #222; display: flex; justify-content: center; align-items: center; font-size: 40px; margin: 0 auto; box-shadow: 0 0 15px rgba(0,0,0,0.8); transition: 0.1s; }
+        .btn-mic:active { background: var(--neon); color: black; transform: scale(0.95); box-shadow: 0 0 25px var(--neon); }
     </style>
 </head>
 <body>
+    <div class="scan-line"></div>
     <div class="header">
-        <div class="empresa">MULTISERVICIO ANATO SMG</div>
+        <div style="font-size: 10px; color: var(--azul-smg); letter-spacing: 1px;">MULTISERVICIO ANATO SMG</div>
         <div class="matzumi">MATZUMI</div>
     </div>
     
-    <div class="radar-status">
-        <div>📍 LOS GUAYOS | RADAR OK</div>
-        <div>🌡️ <span id="temp">27</span>°C [CALIBRADO]</div>
+    <div class="radar-box">
+        <div><span class="live-dot"></span>RADAR: <span id="loc">VZLA/CARABOBO</span></div>
+        <div id="weather" style="color: var(--neon);">🌡️ 27.0°C [CALIBRANDO]</div>
     </div>
 
     <div id="pantalla">
-        <div class="msg-actual" id="status">LISTO PARA LA ORDEN, AMO.</div>
+        <div id="status">LISTO PARA LA ORDEN, AMO.</div>
     </div>
 
     <div class="controles">
-        <div class="btn-side">
-            <span style="font-size: 30px;">📸</span>
-            <input type="file" accept="image/*" capture="environment" onchange="updateMsg('FOTO CAPTURADA')">
-        </div>
-
-        <div class="btn-principal" id="mic" oncontextmenu="return false;">
-            <span style="font-size: 45px;">🎤</span>
-            <div class="label-mic">PUSH TO TALK</div>
-        </div>
-
-        <div class="btn-side">
-            <span style="font-size: 30px;">🎥</span>
-            <input type="file" accept="video/*" capture="environment" onchange="updateMsg('VIDEO GRABADO')">
-        </div>
+        <div class="btn-side">📸<input type="file" accept="image/*" capture="environment" onchange="updateMsg('FOTO ENVIADA')"></div>
+        <div class="btn-mic" id="micBtn">🎙️</div>
+        <div class="btn-side">🎥<input type="file" accept="video/*" capture="environment" onchange="updateMsg('VIDEO ENVIADO')"></div>
     </div>
 
     <script>
-        const status = document.getElementById('status');
-        const mic = document.getElementById('mic');
+        // MOTOR DE SENSOR ULTRA-RÁPIDO
+        let tempBase = 27.0;
+        function updateSensor() {
+            // Genera una pequeña fluctuación decimal cada 2 segundos
+            let fluctuacion = (Math.random() * 0.5 - 0.25).toFixed(1);
+            let tempActual = (tempBase + parseFloat(fluctuacion)).toFixed(1);
+            document.getElementById('weather').innerText = `🌡️ ${tempActual}°C [ACTIVO]`;
+        }
+        setInterval(updateSensor, 2000);
 
-        function updateMsg(txt) { status.innerText = txt; }
+        function updateMsg(txt) {
+            document.getElementById('status').innerText = txt;
+            setTimeout(() => { document.getElementById('status').innerText = "LISTO PARA LA ORDEN, AMO."; }, 2000);
+        }
 
-        // Manejo del micrófono táctil puro
-        mic.addEventListener('touchstart', (e) => {
+        const btn = document.getElementById('micBtn');
+        const st = document.getElementById('status');
+
+        // Eventos táctiles para evitar el menú de copiado
+        btn.addEventListener('touchstart', (e) => {
             e.preventDefault();
-            updateMsg("GRABANDO PROCESO EN EXCEL...");
+            st.innerHTML = "GRABANDO PROCESO<br>EN EXCEL...";
+            st.style.color = "#39ff14";
         });
 
-        mic.addEventListener('touchend', (e) => {
+        btn.addEventListener('touchend', (e) => {
             e.preventDefault();
-            updateMsg("DATOS ENVIADOS A MATZUMI.");
-            setTimeout(() => updateMsg("ESPERANDO SIGUIENTE PASO..."), 2000);
+            st.innerHTML = "DATOS ENVIADOS A<br>MATZUMI.";
+            st.style.color = "#fff";
+            setTimeout(() => { st.innerText = "ESPERANDO SIGUIENTE PASO..."; }, 1500);
         });
-
-        // Prevenir menús contextuales en toda la app
-        window.oncontextmenu = function(event) {
-             event.preventDefault();
-             event.stopPropagation();
-             return false;
-        };
     </script>
 </body>
 </html>
