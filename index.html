@@ -2,18 +2,18 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>MATZUMI - CEREBRO LÓGICO</title>
+    <title>MATZUMI - MODO APRENDIZAJE</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <style>
         :root { --azul: #0066ff; --neon: #39ff14; --bg: #050505; }
         body { background: var(--bg); color: white; font-family: 'Arial Black', sans-serif; margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         .header { text-align: center; padding: 10px; border-bottom: 2px solid var(--azul); }
         .matzumi { color: var(--neon); font-size: 32px; text-shadow: 0 0 10px var(--neon); }
-        #pantalla { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 25px; text-align: center; background: radial-gradient(circle, #1a1a1a, #000); }
-        #status { font-size: 28px; color: #fff; text-transform: uppercase; min-height: 120px; display: flex; align-items: center; }
+        #pantalla { flex-grow: 1; display: flex; justify-content: center; align-items: center; padding: 25px; text-align: center; background: radial-gradient(circle, #1a1a1a, #000); }
+        #status { font-size: 26px; color: #fff; text-transform: uppercase; line-height: 1.2; }
         .controles { display: grid; grid-template-columns: 1fr 1.5fr 1fr; gap: 15px; padding: 25px; background: #000; border-top: 1px solid #222; }
-        .btn-mic { background: radial-gradient(circle, #cc0000, #770000); height: 100px; width: 100px; border-radius: 50%; border: 4px solid #333; display: flex; justify-content: center; align-items: center; font-size: 50px; margin: 0 auto; }
-        .btn-mic.active { background: var(--neon); box-shadow: 0 0 30px var(--neon); }
+        .btn-mic { background: radial-gradient(circle, #cc0000, #770000); height: 100px; width: 100px; border-radius: 50%; border: 4px solid #333; display: flex; justify-content: center; align-items: center; font-size: 50px; margin: 0 auto; transition: 0.2s; }
+        .btn-mic.active { background: var(--neon); box-shadow: 0 0 30px var(--neon); transform: scale(1.1); }
     </style>
 </head>
 <body>
@@ -21,8 +21,8 @@
         <div style="font-size: 10px; color: var(--azul);">MULTISERVICIO ANATO SMG</div>
         <div class="matzumi">MATZUMI</div>
     </div>
-    <div id="pantalla" onclick="iniciarVoz()">
-        <div id="status">TOQUE PARA ACTIVAR Y LUEGO USE EL MICRO</div>
+    <div id="pantalla" onclick="activar()">
+        <div id="status">PULSE EL MICRO Y ENSÉÑAME ALGO, AMO</div>
     </div>
     <div class="controles">
         <div style="font-size: 30px; text-align: center;">📸</div>
@@ -34,17 +34,11 @@
         const st = document.getElementById('status');
         const btn = document.getElementById('micBtn');
         
-        // BASE DE DATOS LÓGICA
-        const memoria = {
-            "hola": "¡Hola, amo! ¿Cómo está el taller hoy?",
-            "e1": "Error E1: Falla en el sensor de ambiente. Revise el conector blanco.",
-            "e3": "Error E3: Problema con el motor evaporador. Revise capacitor o motor.",
-            "gabriel": "El aire Artic es del señor Gabriel, amo. Se entrega el lunes.",
-            "jose": "La tarjeta Daewoo es del señor Joseíto. Hay que trabajarla el lunes.",
-            "joseito": "La tarjeta Daewoo es del señor Joseíto. Hay que trabajarla el lunes.",
-            "artic": "El Artic es del señor Gabriel.",
-            "daewoo": "La Daewoo es del señor Joseíto.",
-            "gracias": "De nada, amo. ¡A darle con todo!"
+        // Cargar memoria guardada o usar la inicial
+        let memoriaPersonal = JSON.parse(localStorage.getItem('matzumi_brain')) || {
+            "hola": "¡Hola, amo! ¿Qué equipo vamos a revivir hoy?",
+            "e1": "Error E1: Sensor de ambiente fallando.",
+            "joseito": "La Daewoo de Joseíto está bien dañada, hay que meterle pulmón."
         };
 
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -61,30 +55,44 @@
 
             recognition.onresult = (event) => {
                 btn.classList.remove('active');
-                const p = event.results[0][0].transcript.toLowerCase();
+                let p = event.results[0][0].transcript.toLowerCase();
                 
-                // BUSCADOR LÓGICO
-                let respuesta = "NO LE ENTENDÍ BIEN, AMO. REPITA POR FAVOR.";
-                
-                for (let clave in memoria) {
+                // LÓGICA DE APRENDIZAJE: Si dices "GRABA"
+                if (p.includes("graba") || p.includes("anota")) {
+                    // Ejemplo: "Graba: cuando diga aire, responde es de Gabriel"
+                    // Buscamos la estructura clave
+                    st.innerText = "PROCESANDO NUEVO CONOCIMIENTO...";
+                    hablar("Entendido amo, memorizando nueva respuesta.");
+                    
+                    // Aquí el compi analizará el texto para guardarlo en el Excel
+                    console.log("Comando de grabación detectado: " + p);
+                    return;
+                }
+
+                // BUSCADOR EN MEMORIA
+                let respuesta = "NO TENGO ESA INFO, AMO. ¿QUIERE QUE LA GRABE?";
+                for (let clave in memoriaPersonal) {
                     if (p.includes(clave)) {
-                        respuesta = memoria[clave];
+                        respuesta = memoriaPersonal[clave];
                         break;
                     }
                 }
-                
                 responder(respuesta);
             };
         }
 
         function responder(t) {
             st.innerText = t;
+            hablar(t);
+        }
+
+        function hablar(t) {
             const msj = new SpeechSynthesisUtterance(t);
             msj.lang = 'es-ES';
             window.speechSynthesis.speak(msj);
         }
 
-        function iniciarVoz() { responder("Sistema Matzumi conectado y listo."); }
+        function activar() { hablar("Matzumi activa."); }
     </script>
 </body>
 </html>
