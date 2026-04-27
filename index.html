@@ -3,30 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MATZUMI V16 - EL CEREBRO SMG</title>
+    <title>MATZUMI V18 - CEREBRO SMG</title>
     <style>
         :root { --neon: #00f2ff; --green: #2ecc71; --bg: #050505; }
-        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; height: 100vh; }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 10px; height: 100vh; display: flex; flex-direction: column; }
         .header { text-align: center; border-bottom: 2px solid var(--neon); padding-bottom: 5px; }
-        .sensors { display: flex; justify-content: space-between; background: #111; padding: 10px; border-radius: 8px; margin: 10px 0; font-size: 13px; border: 1px solid #333; }
+        .sensors { display: flex; justify-content: space-between; background: #111; padding: 8px; border-radius: 5px; font-size: 12px; margin-top: 5px; border: 1px solid #333; }
         
         #monitor { 
             background: #000; border: 2px solid var(--green); height: 180px; 
-            border-radius: 10px; padding: 15px; overflow-y: auto; color: var(--green); 
-            font-family: 'Consolas', monospace; font-size: 14px; box-shadow: inset 0 0 15px #003300; margin-bottom: 10px;
+            border-radius: 8px; padding: 12px; overflow-y: auto; color: var(--green); 
+            font-family: 'Consolas', monospace; font-size: 14px; box-shadow: inset 0 0 15px #003300; margin: 10px 0;
         }
-
-        #user-input { width: 92%; background: #111; border: 1px solid var(--neon); color: white; padding: 12px; border-radius: 8px; margin-bottom: 10px; font-size: 15px; }
 
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; flex-grow: 1; }
         .btn-smg { 
             background: linear-gradient(145deg, #1a1a1a, #0a0a0a); border: 1px solid #444; color: white; border-radius: 12px; 
-            font-size: 14px; font-weight: bold; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 12px; font-size: 14px; font-weight: bold; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
-        .btn-smg:active { background: var(--green); color: black; }
-        .sub-item { background: #222; border: 1px solid var(--green); padding: 8px; margin: 4px; border-radius: 5px; display: inline-block; font-size: 12px; cursor: pointer; }
+        .btn-smg:active { background: var(--green); color: black; box-shadow: 0 0 15px var(--green); }
+        .btn-smg small { font-size: 9px; color: var(--neon); margin-top: 4px; }
+        .back-btn { grid-column: span 2; background: #331111; border-color: #ff4444; }
 
-        .footer { display: flex; justify-content: space-around; align-items: center; padding: 10px; background: #111; border-radius: 20px 20px 0 0; border-top: 1px solid #333; }
+        .footer { display: flex; justify-content: space-around; align-items: center; padding: 10px; background: #111; border-radius: 20px 20px 0 0; }
         .mic-btn { width: 70px; height: 70px; background: var(--green); color: black; border-radius: 50%; border: none; font-size: 30px; box-shadow: 0 0 20px var(--green); }
     </style>
 </head>
@@ -34,36 +33,46 @@
 
 <div class="header">
     <div style="color: var(--neon); font-size: 18px; font-weight: bold;">MULTISERVICIOS ANATO SMG</div>
-    <div style="color: var(--green); font-size: 14px;">MATZUMI V16 - ASISTENTE INTEGRAL</div>
+    <div style="color: var(--green); font-size: 13px;">ASISTENTE MATZUMI V18</div>
 </div>
 
 <div class="sensors">
-    <span>📍 LOS GUAYOS, VZLA</span>
-    <span id="clima">🌡️ 25°C - HUMEDAD 82%</span>
+    <span>📍 LOS GUAYOS, CARABOBO</span>
+    <span id="temp-val">🌡️ 25°C</span>
 </div>
 
-<div id="monitor">> MATZUMI ONLINE...<br>> AMO, YA RECUPERÉ TODA LA DATA.<br>> ¿QUÉ EQUIPO VAMOS A REPARAR HOY?</div>
+<div id="monitor">> MATZUMI ONLINE, AMO.<br>> LISTA PARA EL MANTENIMIENTO.<br>> ¿QUÉ REFRIGERANTE ESTAMOS CARGANDO?</div>
 
-<input type="text" id="user-input" placeholder="Escriba o salude (ej: Buenos días)..." onkeypress="handle(event)">
+<div id="menu-main" class="grid">
+    <button class="btn-smg" onclick="showSub('AIRES')">❄️ AIRES<br><small>FALLAS / MARCAS</small></button>
+    <button class="btn-smg" onclick="showSub('PRESIONES')">📊 PRESIONES<br><small>CALCULAR R410 / R22</small></button>
+    <button class="btn-smg" onclick="showSub('LBLANCA')">🧊 L. BLANCA<br><small>NEVERAS / BM</small></button>
+    <button class="btn-smg" onclick="showSub('PROTO')">🛡️ PROTOCOLO<br><small>JVTRONIC</small></button>
+</div>
 
-<div id="menu" class="grid">
-    <button class="btn-smg" onclick="nav('AIRES')">❄️ AIRES<br><small>MARCAS / BTU</small></button>
-    <button class="btn-smg" onclick="nav('BLANCA')">🧺 LÍNEA BLANCA<br><small>NEVERA / SECADORA</small></button>
-    <button class="btn-smg" onclick="nav('PROTO')">🛡️ PROTOCOLO<br><small>JVTRONIC</small></button>
-    <button class="btn-smg" onclick="nav('MURA')">⚡ MURACHI<br><small>10.000 uF</small></button>
-    <button class="btn-smg" onclick="nav('MICRO')">🔌 MICROONDAS<br><small>MAGNETRÓN / H.V.</small></button>
-    <button class="btn-smg" onclick="location.reload()">🔄 REINICIAR<br><small>MENU PRINCIPAL</small></button>
+<div id="menu-aires" class="grid" style="display:none;">
+    <button class="btn-smg" onclick="calc('BTU12')">12K BTU</button>
+    <button class="btn-smg" onclick="calc('BTU18')">18K BTU</button>
+    <button class="btn-smg" onclick="data('GREEN')">GREEN PLUS</button>
+    <button class="btn-smg" onclick="data('DAMASCO')">DAMASCO</button>
+    <button class="btn-smg back-btn" onclick="goBack()">⬅️ VOLVER AL INICIO</button>
+</div>
+
+<div id="menu-presiones" class="grid" style="display:none;">
+    <button class="btn-smg" onclick="calcPresion('R410A')">R410A</button>
+    <button class="btn-smg" onclick="calcPresion('R22')">R22</button>
+    <button class="btn-smg back-btn" onclick="goBack()">⬅️ VOLVER AL INICIO</button>
 </div>
 
 <div class="footer">
-    <button class="btn-smg" style="width:50px; height:50px;" onclick="speak('Abriendo cámara')">📷</button>
-    <button class="mic-btn" onclick="toggleMic()">🎤</button>
-    <button class="btn-smg" style="width:50px; height:50px;" onclick="nav('RADAR')">📡</button>
+    <button class="btn-smg" style="width:50px; height:50px;" onclick="location.reload()">🔄</button>
+    <button class="mic-btn" onclick="speak('Dígame, amo. ¿Qué marca o presión necesita saber?')">🎤</button>
+    <button class="btn-smg" style="width:50px; height:50px;" onclick="speak('Bitácora SMG activa')">📂</button>
 </div>
 
 <script>
-    const log = document.getElementById('monitor');
-    const input = document.getElementById('user-input');
+    const mon = document.getElementById('monitor');
+    const tempAmbiente = 25; // Temperatura de Los Guayos
 
     function speak(t) {
         const u = new SpeechSynthesisUtterance(t);
@@ -71,58 +80,48 @@
         window.speechSynthesis.speak(u);
     }
 
-    function handle(e) {
-        if(e.key === 'Enter') {
-            const v = input.value.toLowerCase();
-            input.value = "";
-            let res = "";
-            
-            if(v.includes("hola") || v.includes("buenos días")) {
-                res = "¡Hola, amo! ¿Cómo está? Aquí lista para darle batalla a los aires en Los Guayos.";
-                log.innerHTML = `> MATZUMI: ${res}`;
-            } else if(v.includes("green")) {
-                res = "Falla Green Plus: Error E6 es comunicación. Revise el cable de señal y los 24 voltios.";
-                log.innerHTML += `<br>> <b>GREEN:</b> ${res}`;
-            } else {
-                res = "Entendido, amo. Estoy buscando en los manuales de Anato SMG...";
-                log.innerHTML += `<br>> <b>PROCESANDO:</b> ${v}`;
-            }
-            speak(res);
-        }
+    function showSub(cat) {
+        document.getElementById('menu-main').style.display = 'none';
+        if(cat==='AIRES') document.getElementById('menu-aires').style.display = 'grid';
+        if(cat==='PRESIONES') document.getElementById('menu-presiones').style.display = 'grid';
+        speak("Accediendo a " + cat);
     }
 
-    function nav(t) {
-        let h = ""; let s = "";
-        if(t === 'AIRES') {
-            s = "Cargando 32 marcas y tablas de BTU.";
-            h = `<b>[CATÁLOGO AIRES SMG]</b><br>
-                <span class="sub-item" onclick="speak('Damasco: 5k en pozo, 10k en ambiente')">DAMASCO</span>
-                <span class="sub-item" onclick="speak('Green Plus: Error E6 comunicación')">GREEN PLUS</span>
-                <span class="sub-item" onclick="speak('Samsung: Error E1 sensores')">SAMSUNG</span>
-                <span class="sub-item" onclick="speak('BTU 12 mil: 115 a 125 PSI en R410')">12K BTU</span>
-                <span class="sub-item" onclick="speak('BTU 18 mil: 110 a 120 PSI')">18K BTU</span>`;
-        }
-        if(t === 'BLANCA') {
-            s = "Línea Blanca: Neveras, Secadoras y Lavadoras.";
-            h = `<b>[LÍNEA BLANCA]</b><br>
-                <span class="sub-item" onclick="speak('Neveras BM: Revise bimetal y ventilador')">NEVERA BM</span>
-                <span class="sub-item" onclick="speak('Secadora: Revise térmico y resistencia')">SECADORA</span>
-                <span class="sub-item" onclick="speak('Mabe: Error de sensor de peso')">LAVADORA MABE</span>`;
-        }
-        if(t === 'MICRO') {
-            s = "Sección de Microondas activa.";
-            h = `<b>[MICROONDAS]</b><br>
-                - Magnetrón: Verifique antena y ohmiaje.<br>
-                - Condensador: ¡Descargue antes de tocar!<br>
-                - Fusible H.V.: Verifique continuidad.`;
-        }
-        log.innerHTML = `> ${h || t}`;
-        speak(s);
+    function goBack() {
+        document.getElementById('menu-aires').style.display = 'none';
+        document.getElementById('menu-presiones').style.display = 'none';
+        document.getElementById('menu-main').style.display = 'grid';
     }
 
-    function toggleMic() {
-        speak("Dígame, amo. ¿Qué reporte anotamos?");
-        log.innerHTML += "<br>> ESCUCHANDO REPORTE...";
+    function calcPresion(gas) {
+        let pBaja = 0;
+        let pAlta = 0;
+        let msg = "";
+
+        if(gas === 'R410A') {
+            // Lógica: A 25°C amb, la baja suele estar entre 115-125
+            pBaja = 115 + (tempAmbiente - 20) * 1.5;
+            msg = `Amo, para R410A con ${tempAmbiente} grados, la presión de baja ideal es de ${pBaja.toFixed(0)} PSI.`;
+        } else if(gas === 'R22') {
+            pBaja = 60 + (tempAmbiente - 20) * 0.8;
+            msg = `Para R22 con ${tempAmbiente} grados, mantenga la baja en ${pBaja.toFixed(0)} PSI.`;
+        }
+
+        mon.innerHTML = `> CALCULADORA SMG<br>> GAS: ${gas}<br>> TEMP: ${tempAmbiente}°C<br>> BAJA SUGERIDA: ${pBaja.toFixed(0)} PSI`;
+        speak(msg);
+    }
+
+    function data(marca) {
+        let d = "";
+        if(marca === 'GREEN') d = "Falla Green Plus: E6 es error de comunicación. Revise cable de señal.";
+        if(marca === 'DAMASCO') d = "Damasco: Sensores de 5k y 10k. Revise capacitor de arranque.";
+        mon.innerHTML = `> DATA MARCA: ${marca}<br>> ${d}`;
+        speak(d);
+    }
+
+    function calc(btu) {
+        speak("Analizando capacidad de " + btu + " btu.");
+        mon.innerHTML = `> CAPACIDAD: ${btu}<br>> R410A: 115-125 PSI<br>> R22: 65-70 PSI`;
     }
 </script>
 </body>
