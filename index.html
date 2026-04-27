@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MATZUMI ELITE V10 - ANATO SMG</title>
+    <style>
+        :root { --neon-blue: #00f2ff; --matsumi-green: #2ecc71; --bg-dark: #050505; }
+        body { background: var(--bg-dark); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 15px; display: flex; flex-direction: column; height: 98vh; overflow: hidden; }
+        
+        /* Cabecera Neón */
+        .header { text-align: center; margin-bottom: 10px; }
+        .neon-title { color: var(--neon-blue); text-shadow: 0 0 15px var(--neon-blue); font-size: 22px; font-weight: bold; text-transform: uppercase; }
+        .asistente-name { color: var(--matsumi-green); font-size: 18px; font-weight: bold; margin-top: 2px; }
+
+        /* Sensores */
+        .sensors { display: flex; justify-content: space-between; background: #111; padding: 10px; border-radius: 10px; border: 1px solid #333; margin: 10px 0; }
+        #gps { font-size: 11px; color: #3498db; }
+        #temp { font-size: 20px; font-weight: bold; }
+
+        /* Monitor de Datos */
+        #monitor { 
+            background: #000; border: 2px solid #1a1a1a; height: 120px; border-radius: 8px; 
+            padding: 10px; font-family: monospace; color: var(--matsumi-green); 
+            overflow-y: auto; font-size: 13px; box-shadow: inset 0 0 10px #0f0; margin-bottom: 15px;
+        }
+
+        /* Rejilla de Botones */
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; flex-grow: 1; }
+        .btn-smg { 
+            background: #1a1a1a; border: 2px solid #333; color: white; border-radius: 15px; 
+            font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.2s;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .btn-smg:active { transform: scale(0.95); background: #333; }
+
+        /* Barra Multimedia */
+        .footer { display: flex; justify-content: space-around; align-items: center; padding: 15px 0; background: #0a0a0a; border-radius: 25px 25px 0 0; }
+        .media-btn { background: #222; border: none; color: white; width: 50px; height: 50px; border-radius: 50%; font-size: 20px; cursor: pointer; }
+        .mic-btn { width: 70px; height: 70px; background: var(--matsumi-green); color: black; font-size: 30px; position: relative; }
+        .mic-active { background: #e74c3c; box-shadow: 0 0 20px #e74c3c; animation: pulse 1s infinite; }
+
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="neon-title">Multiservicio Anato SMG</div>
+        <div class="asistente-name">Asistente MATZUMI</div>
+    </div>
+
+    <div class="sensors">
+        <div id="gps">📍 Buscando satélites en Los Guayos...</div>
+        <div id="temp" style="color: var(--matsumi-green);">--°C</div>
+    </div>
+
+    <div id="monitor">> SISTEMA MATZUMI V10 LISTO.<br>> ESPERANDO ÓRDENES, AMO.</div>
+
+    <div class="grid">
+        <button class="btn-smg" onclick="speakMenu('AIRES')">❄️ AIRES<br><small>29 Marcas/Split/Inv</small></button>
+        <button class="btn-smg" onclick="speakMenu('BLANCA')">🧊 LÍNEA BLANCA<br><small>Neveras/Inv/BM</small></button>
+        <button class="btn-smg" onclick="speakMenu('DINERO')">💵 PRESUPUESTO<br><small>Tasa BCV/$40</small></button>
+        <button class="btn-smg" onclick="speakMenu('RADAR')">📡 RADAR LUCY<br><small>Migajas/Gasolina</small></button>
+        <button class="btn-smg" onclick="speakMenu('INFORMES')">📂 INFORMES<br><small>Bitácora/Fotos</small></button>
+        <button class="btn-smg" onclick="speakMenu('CLIENTES')">👥 CLIENTES<br><small>Zonas/Garantía</small></button>
+        <button class="btn-smg" onclick="speakMenu('PROTOCOLOS')">🧰 PROTOCOLOS<br><small>JVTRONIC/Bornes</small></button>
+        <button class="btn-smg" onclick="speakMenu('MURACHO')">⚡ MURACHI<br><small>Toroidal/10k uF</small></button>
+    </div>
+
+    <div class="footer">
+        <button class="media-btn">📷</button>
+        <button class="media-btn">🎥</button>
+        <button id="micBtn" class="media-btn mic-btn" onmousedown="startListen()" onmouseup="stopListen()">🎤</button>
+    </div>
+
+    <script>
+        const monitor = document.getElementById('monitor');
+        const tempDisp = document.getElementById('temp');
+        let excelData = [];
+        let modoColoquial = false;
+
+        // Configuración de Voz
+        function hablar(texto) {
+            const synth = window.speechSynthesis;
+            const utter = new SpeechSynthesisUtterance(texto);
+            utter.lang = 'es-ES';
+            utter.pitch = 1.2; // Voz un poco más aguda/juguetona
+            utter.rate = 1;
+            synth.speak(utter);
+        }
+
+        function speakMenu(opcion) {
+            let msg = "";
+            if(opcion === 'AIRES') msg = "Cargando marcas: Damasco, Green Plus, Arti y 29 más. Constante 17 activa.";
+            if(opcion === 'MURACHO') msg = "Proyecto Muracho: Banco de capacitores listo amo.";
+            if(opcion === 'PROTOCOLOS') msg = "Guía JVTRONIC: Setee amperaje y voltajes de corte.";
+            
+            monitor.innerHTML = `> SUBMENÚ: ${opcion}<br>> ${msg}`;
+            hablar(opcion);
+        }
+
+        // Lógica de Temperatura Real (Simulada para el demo)
+        function updateSensors() {
+            let t = 31; // Aquí puedes conectar API real
+            tempDisp.innerText = t + "°C";
+            if(t < 30) tempDisp.style.color = "#2ecc71";
+            else if(t === 30) tempDisp.style.color = "#f39c12";
+            else tempDisp.style.color = "#e74c3c";
+            document.getElementById('gps').innerText = "📍 LOS GUAYOS, CARABOBO";
+        }
+
+        // Micrófono y Dictado
+        let recognition;
+        if ('webkitSpeechRecognition' in window) {
+            recognition = new webkitSpeechRecognition();
+            recognition.continuous = true;
+            recognition.onresult = (event) => {
+                const results = event.results[event.results.length - 1];
+                const text = results[0].transcript.toLowerCase();
+                processVoice(text);
+            };
+        }
+
+        function startListen() {
+            document.getElementById('micBtn').classList.add('mic-active');
+            recognition.start();
+            monitor.innerHTML = "> MATZUMI: ESCUCHANDO, AMO...";
+        }
+
+        function stopListen() {
+            document.getElementById('micBtn').classList.remove('mic-active');
+            recognition.stop();
+        }
+
+        function processVoice(text) {
+            monitor.innerHTML = `> DICTADO: ${text}`;
+            
+            if(text.includes("coloquial")) {
+                modoColoquial = true;
+                hablar("Ya me solté el moño, amo. Ahora sí le voy a decir las verdades de estos equipos.");
+            } else if(text.includes("hola")) {
+                hablar("Hola, amo, ¿cómo estás?");
+            } else if(text.includes("anota") || text.includes("excel")) {
+                excelData.push([new Date().toLocaleTimeString(), text]);
+                hablar("Anotado en la bitácora de Excel, jefe.");
+                console.table(excelData); // Esto simula la carpeta de dictado
+            } else if(text.includes("lluvia")) {
+                hablar("Amo, el cielo se está poniendo feo. Recoja todo que Lucy no es un barco.");
+            }
+        }
+
+        updateSensors();
+        setInterval(updateSensors, 60000);
+    </script>
+</body>
+</html>
