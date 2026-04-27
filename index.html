@@ -3,63 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MATZUMI V15 - MULTISERVICIOS ANATO SMG</title>
+    <title>MATZUMI V16 - EL CEREBRO SMG</title>
     <style>
-        :root { --neon-blue: #00f2ff; --matsumi-green: #2ecc71; --bg-dark: #050505; }
-        body { background: var(--bg-dark); color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        :root { --neon: #00f2ff; --green: #2ecc71; --bg: #050505; }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; height: 100vh; }
+        .header { text-align: center; border-bottom: 2px solid var(--neon); padding-bottom: 5px; }
+        .sensors { display: flex; justify-content: space-between; background: #111; padding: 10px; border-radius: 8px; margin: 10px 0; font-size: 13px; border: 1px solid #333; }
         
-        .header { text-align: center; border-bottom: 2px solid var(--neon-blue); padding-bottom: 5px; }
-        .neon-title { color: var(--neon-blue); font-size: 18px; font-weight: bold; text-transform: uppercase; }
-
         #monitor { 
-            background: #000; border: 2px solid var(--matsumi-green); height: 180px; 
-            border-radius: 8px; padding: 15px; overflow-y: auto; color: var(--matsumi-green); 
-            font-family: 'Consolas', monospace; font-size: 14px; box-shadow: inset 0 0 15px #003300; margin: 10px 0;
-            line-height: 1.4;
+            background: #000; border: 2px solid var(--green); height: 180px; 
+            border-radius: 10px; padding: 15px; overflow-y: auto; color: var(--green); 
+            font-family: 'Consolas', monospace; font-size: 14px; box-shadow: inset 0 0 15px #003300; margin-bottom: 10px;
         }
 
-        .input-area { margin-bottom: 10px; }
-        #user-input { width: 94%; background: #111; border: 1px solid #444; color: white; padding: 10px; border-radius: 5px; font-size: 14px; }
+        #user-input { width: 92%; background: #111; border: 1px solid var(--neon); color: white; padding: 12px; border-radius: 8px; margin-bottom: 10px; font-size: 15px; }
 
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; flex-grow: 1; margin-bottom: 5px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; flex-grow: 1; }
         .btn-smg { 
-            background: #1a1a1a; border: 2px solid #333; color: white; border-radius: 10px; 
-            font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.2s;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: linear-gradient(145deg, #1a1a1a, #0a0a0a); border: 1px solid #444; color: white; border-radius: 12px; 
+            font-size: 14px; font-weight: bold; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
-        .btn-smg:active { background: var(--matsumi-green); color: black; }
+        .btn-smg:active { background: var(--green); color: black; }
+        .sub-item { background: #222; border: 1px solid var(--green); padding: 8px; margin: 4px; border-radius: 5px; display: inline-block; font-size: 12px; cursor: pointer; }
 
-        .sub-btn { background: #222; border: 1px solid var(--matsumi-green); color: white; padding: 8px; margin: 4px; border-radius: 6px; font-size: 12px; cursor: pointer; display: inline-block; }
-        .sub-btn:hover { background: var(--matsumi-green); color: black; }
-
-        .footer { display: flex; justify-content: space-around; align-items: center; padding: 10px; background: #111; border-radius: 20px 20px 0 0; }
-        .mic-btn { width: 65px; height: 65px; background: var(--matsumi-green); color: black; border: none; border-radius: 50%; font-size: 28px; box-shadow: 0 0 15px var(--matsumi-green); }
+        .footer { display: flex; justify-content: space-around; align-items: center; padding: 10px; background: #111; border-radius: 20px 20px 0 0; border-top: 1px solid #333; }
+        .mic-btn { width: 70px; height: 70px; background: var(--green); color: black; border-radius: 50%; border: none; font-size: 30px; box-shadow: 0 0 20px var(--green); }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <div class="neon-title">Multiservicios Anato SMG</div>
-    <div style="color: var(--matsumi-green); font-size: 12px; font-weight: bold;">MATZUMI V15 - OFFLINE TECH</div>
+    <div style="color: var(--neon); font-size: 18px; font-weight: bold;">MULTISERVICIOS ANATO SMG</div>
+    <div style="color: var(--green); font-size: 14px;">MATZUMI V16 - ASISTENTE INTEGRAL</div>
 </div>
 
-<div id="monitor">> SISTEMA MATZUMI CARGADO.<br>> TODOS LOS DATOS TÉCNICOS ESTÁN OFFLINE.<br>> ESCRIBA O SELECCIONE UNA OPCIÓN.</div>
-
-<div class="input-area">
-    <input type="text" id="user-input" placeholder="Escriba marca o falla (ej: Green Plus)..." onkeypress="checkEnter(event)">
+<div class="sensors">
+    <span>📍 LOS GUAYOS, VZLA</span>
+    <span id="clima">🌡️ 25°C - HUMEDAD 82%</span>
 </div>
 
-<div id="main-grid" class="grid">
-    <button class="btn-smg" onclick="menu('AIRES')">❄️ AIRES<br><small>Marcas / BTU</small></button>
-    <button class="btn-smg" onclick="menu('NEVERAS')">🧊 L. BLANCA<br><small>Neveras / BM</small></button>
-    <button class="btn-smg" onclick="menu('PROTO')">🛡️ PROTOCOLO<br><small>JVTRONIC</small></button>
-    <button class="btn-smg" onclick="menu('RADAR')">📡 RADAR<br><small>Clima / GPS</small></button>
+<div id="monitor">> MATZUMI ONLINE...<br>> AMO, YA RECUPERÉ TODA LA DATA.<br>> ¿QUÉ EQUIPO VAMOS A REPARAR HOY?</div>
+
+<input type="text" id="user-input" placeholder="Escriba o salude (ej: Buenos días)..." onkeypress="handle(event)">
+
+<div id="menu" class="grid">
+    <button class="btn-smg" onclick="nav('AIRES')">❄️ AIRES<br><small>MARCAS / BTU</small></button>
+    <button class="btn-smg" onclick="nav('BLANCA')">🧺 LÍNEA BLANCA<br><small>NEVERA / SECADORA</small></button>
+    <button class="btn-smg" onclick="nav('PROTO')">🛡️ PROTOCOLO<br><small>JVTRONIC</small></button>
+    <button class="btn-smg" onclick="nav('MURA')">⚡ MURACHI<br><small>10.000 uF</small></button>
+    <button class="btn-smg" onclick="nav('MICRO')">🔌 MICROONDAS<br><small>MAGNETRÓN / H.V.</small></button>
+    <button class="btn-smg" onclick="location.reload()">🔄 REINICIAR<br><small>MENU PRINCIPAL</small></button>
 </div>
 
 <div class="footer">
-    <button class="btn-smg" style="width: 50px; height: 50px;" onclick="location.reload()">🔄</button>
+    <button class="btn-smg" style="width:50px; height:50px;" onclick="speak('Abriendo cámara')">📷</button>
     <button class="mic-btn" onclick="toggleMic()">🎤</button>
-    <button class="btn-smg" style="width: 50px; height: 50px;" onclick="speak('Resumen de hoy: 3 aires revisados y una nevera BM.')">📂</button>
+    <button class="btn-smg" style="width:50px; height:50px;" onclick="nav('RADAR')">📡</button>
 </div>
 
 <script>
@@ -72,70 +71,58 @@
         window.speechSynthesis.speak(u);
     }
 
-    function menu(tipo) {
-        let content = "";
-        let audio = "";
-        if(tipo === 'AIRES') {
-            audio = "Entrando a manuales de Aires. Elija marca.";
-            content = `<b>[CATÁLOGO DE AIRES]</b><br>
-                <div class="sub-btn" onclick="info('DAMASCO')">DAMASCO</div>
-                <div class="sub-btn" onclick="info('GREEN')">GREEN PLUS</div>
-                <div class="sub-btn" onclick="info('ARTI')">ARTI</div><br>
-                <div class="sub-btn" onclick="info('BTU')">TABLA BTU</div>`;
-        }
-        if(tipo === 'NEVERAS') {
-            audio = "Manuales de Línea Blanca disponibles.";
-            content = `<b>[LÍNEA BLANCA]</b><br>
-                <div class="sub-btn" onclick="info('BM')">NEVERA BM</div>
-                <div class="sub-btn" onclick="info('SAMSUNG')">SAMSUNG INV</div>
-                <div class="sub-btn" onclick="info('MABE')">MABE / WHIRL</div>`;
-        }
-        if(tipo === 'PROTO') {
-            audio = "Abriendo protocolo JVTRONIC.";
-            content = `<b>[JVTRONIC SMG]</b><br>
-                - Set Voltaje: 110V/220V +/- 10%<br>
-                - Amp de seguridad: Ver placa<br>
-                - Tiempo de espera: 180 seg.`;
-        }
-        if(tipo === 'RADAR') {
-            audio = "Sincronizando clima en Los Guayos.";
-            content = `<b>[ESTADO DEL CLIMA]</b><br>
-                📍 Ubicación: Los Guayos, Carb.<br>
-                🌡️ Temp: 24°C (Fresco)<br>
-                ⚠️ Alerta: Humedad alta.`;
-        }
-        log.innerHTML = `> ${content}`;
-        speak(audio);
-    }
-
-    function info(item) {
-        let data = "";
-        if(item === 'GREEN') data = "Green Plus: Falla E6 es error de comunicación. Revise el cable de señal entre unidades.";
-        if(item === 'DAMASCO') data = "Damasco: Verifique sensores de pozo y ambiente. Valor normal: 5k o 10k ohmios.";
-        if(item === 'BTU') data = "Tabla: 12k BTU (R410A) = 115-125 PSI. 18k BTU = 110-120 PSI.";
-        if(item === 'BM') data = "Nevera BM: Error de parpadeo. Revise bimetal y ventilador del freezer.";
-        
-        log.innerHTML += `<br><br>> <b>${item}:</b> ${data}`;
-        speak(data);
-    }
-
-    function checkEnter(e) {
+    function handle(e) {
         if(e.key === 'Enter') {
-            const val = input.value.toUpperCase();
-            if(val.includes("GREEN")) info('GREEN');
-            else if(val.includes("DAMASCO")) info('DAMASCO');
-            else if(val.includes("BTU")) info('BTU');
-            else {
-                log.innerHTML += `<br>> <b>BUSCANDO:</b> ${val}... No hay datos offline exactos.`;
-                speak("No tengo esa información grabada todavía, amo.");
-            }
+            const v = input.value.toLowerCase();
             input.value = "";
+            let res = "";
+            
+            if(v.includes("hola") || v.includes("buenos días")) {
+                res = "¡Hola, amo! ¿Cómo está? Aquí lista para darle batalla a los aires en Los Guayos.";
+                log.innerHTML = `> MATZUMI: ${res}`;
+            } else if(v.includes("green")) {
+                res = "Falla Green Plus: Error E6 es comunicación. Revise el cable de señal y los 24 voltios.";
+                log.innerHTML += `<br>> <b>GREEN:</b> ${res}`;
+            } else {
+                res = "Entendido, amo. Estoy buscando en los manuales de Anato SMG...";
+                log.innerHTML += `<br>> <b>PROCESANDO:</b> ${v}`;
+            }
+            speak(res);
         }
+    }
+
+    function nav(t) {
+        let h = ""; let s = "";
+        if(t === 'AIRES') {
+            s = "Cargando 32 marcas y tablas de BTU.";
+            h = `<b>[CATÁLOGO AIRES SMG]</b><br>
+                <span class="sub-item" onclick="speak('Damasco: 5k en pozo, 10k en ambiente')">DAMASCO</span>
+                <span class="sub-item" onclick="speak('Green Plus: Error E6 comunicación')">GREEN PLUS</span>
+                <span class="sub-item" onclick="speak('Samsung: Error E1 sensores')">SAMSUNG</span>
+                <span class="sub-item" onclick="speak('BTU 12 mil: 115 a 125 PSI en R410')">12K BTU</span>
+                <span class="sub-item" onclick="speak('BTU 18 mil: 110 a 120 PSI')">18K BTU</span>`;
+        }
+        if(t === 'BLANCA') {
+            s = "Línea Blanca: Neveras, Secadoras y Lavadoras.";
+            h = `<b>[LÍNEA BLANCA]</b><br>
+                <span class="sub-item" onclick="speak('Neveras BM: Revise bimetal y ventilador')">NEVERA BM</span>
+                <span class="sub-item" onclick="speak('Secadora: Revise térmico y resistencia')">SECADORA</span>
+                <span class="sub-item" onclick="speak('Mabe: Error de sensor de peso')">LAVADORA MABE</span>`;
+        }
+        if(t === 'MICRO') {
+            s = "Sección de Microondas activa.";
+            h = `<b>[MICROONDAS]</b><br>
+                - Magnetrón: Verifique antena y ohmiaje.<br>
+                - Condensador: ¡Descargue antes de tocar!<br>
+                - Fusible H.V.: Verifique continuidad.`;
+        }
+        log.innerHTML = `> ${h || t}`;
+        speak(s);
     }
 
     function toggleMic() {
-        speak("Dígame, amo. ¿Qué marca estamos revisando?");
-        log.innerHTML += "<br>> ESCUCHANDO REPORTE DE VOZ...";
+        speak("Dígame, amo. ¿Qué reporte anotamos?");
+        log.innerHTML += "<br>> ESCUCHANDO REPORTE...";
     }
 </script>
 </body>
